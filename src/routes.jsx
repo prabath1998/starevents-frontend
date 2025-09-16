@@ -1,0 +1,39 @@
+import { Routes, Route, Navigate } from 'react-router-dom'
+import Home from './pages/Home.jsx'
+import Login from './pages/Login.jsx'
+import Register from './pages/Register.jsx'
+import EventsList from './pages/EventsList.jsx'
+import EventDetail from './pages/EventDetail.jsx'
+import MyOrders from './pages/MyOrders.jsx'
+import Checkout from './pages/Checkout.jsx'
+import OrganizerEvents from './pages/OrganizerEvents.jsx'
+import OrganizerEventCreate from './pages/OrganizerEventCreate.jsx'
+import OrganizerTicketTypes from './pages/OrganizerTicketTypes.jsx'
+import PrivateRoute from './auth/PrivateRoute.jsx'
+import OrganizerRoute from './auth/OrganizerRoute.jsx'
+
+export default function RoutesView() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/events" element={<EventsList />} />
+      <Route path="/events/:id" element={<EventDetail />} />
+
+      <Route element={<PrivateRoute />}>
+        <Route path="/orders" element={<MyOrders />} />
+        <Route path="/checkout" element={<Checkout />} />
+      </Route>
+
+      <Route element={<OrganizerRoute />}>
+        <Route path="/organizer" element={<OrganizerEvents />} />
+        <Route path="/organizer/create" element={<OrganizerEventCreate />} />
+        <Route path="/organizer/:id/ticket-types" element={<OrganizerTicketTypes />} />
+      </Route>
+
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  )
+}
