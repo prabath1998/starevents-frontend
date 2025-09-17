@@ -74,7 +74,7 @@ export default function Navbar() {
         {/* Logo and brand name */}
         <Link to="/" className="flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors">
           <MusicalNoteIcon className="h-7 w-7" />
-          <span className="font-bold text-xl">StarEvents</span>
+          <span className="font-bold text-xl">Star Events</span>
         </Link>
 
         {/* Desktop Navigation */}

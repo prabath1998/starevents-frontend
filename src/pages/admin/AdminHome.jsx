@@ -4,7 +4,7 @@ import Card from '../../components/Card';
 import Button from '../../components/Button';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { User, Users, Calendar, Megaphone, ShoppingCart, DollarSign, Ticket, BarChart2, Plus, ArrowRight } from 'lucide-react';
+import { User, Users, Calendar, Megaphone, ShoppingCart, DollarSign, Ticket, BarChart2, Plus, ArrowRight, } from 'lucide-react';
 
 export default function AdminHome() {
   const [kpi, setKpi] = useState(null);
@@ -27,7 +27,7 @@ export default function AdminHome() {
     { name: 'Active Users', value: kpi.activeUsers, icon: User, subtext: `${(kpi.activeUserRate * 100).toFixed(1)}% of total` },
     { name: 'Total Events', value: kpi.totalEvents, icon: Calendar, subtext: `${kpi.publishedEvents || 0} published` },
     { name: 'Tickets Sold', value: kpi.totalTicketsIssued, icon: Ticket, subtext: `+${kpi.ticketsSoldLast30Days || 0} last month` },
-    { name: 'Total Revenue', value: `$${(kpi.revenueCents / 100).toFixed(2)}`, icon: DollarSign, subtext: `+${kpi.revenueCentsLast30Days ? (kpi.revenueCentsLast30Days / 100).toFixed(2) : 0} this month` },
+    { name: 'Total Revenue', value: `Rs.${(kpi.revenueCents).toFixed(2)}`, icon: DollarSign, subtext: `+${kpi.revenueCentsLast30Days ? (kpi.revenueCentsLast30Days).toFixed(2) : 0} this month` },
     { name: 'Total Orders', value: kpi.totalOrders, icon: ShoppingCart, subtext: `${kpi.paidOrders || 0} paid` },
   ] : [];
 

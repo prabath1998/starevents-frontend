@@ -123,7 +123,7 @@ export default function EventDetail() {
                     </div>
                     <div className="mt-auto">
                       <div className="text-indigo-400 text-3xl font-bold">
-                        {formatCurrency(t.priceCents / 100, t.currency)}
+                        {formatCurrency(t.priceCents, t.currency)}
                       </div>
                       <div className="text-xs text-gray-500 mt-2">
                         Sales: {new Date(t.salesStart).toLocaleDateString()} – {new Date(t.salesEnd).toLocaleDateString()}
@@ -153,7 +153,7 @@ export default function EventDetail() {
       <div className="fixed bottom-0 left-0 right-0 bg-gray-950/70 border-t border-gray-800 backdrop-blur-sm p-4 z-50">
         <div className="container mx-auto flex items-center justify-between">
           <div className="text-gray-300">
-            Total: <span className="text-white text-lg font-bold ml-2">{formatCurrency(totalCents / 100, types[0]?.currency || 'USD')}</span>
+            Total: <span className="text-white text-lg font-bold ml-2">{formatCurrency(totalCents, types[0]?.currency || 'LKR')}</span>
           </div>
           <Button onClick={checkout} disabled={Object.values(qty).every(q => q === 0)}>
             Proceed to Checkout

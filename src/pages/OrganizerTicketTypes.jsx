@@ -13,7 +13,7 @@ export default function OrganizerTicketTypes() {
   const { id } = useParams()
   const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm({
     defaultValues: {
-      name: '', priceCents: 0, currency: 'USD',
+      name: '', priceCents: 0, currency: 'LKR',
       totalQuantity: 0, perOrderLimit: 2,
       salesStart: '', salesEnd: ''
     }
@@ -71,7 +71,7 @@ export default function OrganizerTicketTypes() {
                 />
                 <Input 
                   label="Currency" 
-                  placeholder="USD"
+                  placeholder="LKR"
                   {...register('currency', { required: true })} 
                 />
               </div>
