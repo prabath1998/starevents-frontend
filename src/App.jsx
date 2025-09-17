@@ -6,7 +6,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="max-w-6xl w-full mx-auto px-4 py-6 flex-1">
+      <main className="max-w-7xl w-full mx-auto px-4 py-6 flex-1">
         <RoutesView />
       </main>
       <Toaster

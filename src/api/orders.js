@@ -12,3 +12,8 @@ export async function initiatePayment(orderId) {
   const { data } = await http.post(`/payments/${orderId}/initiate`)
   return data
 }
+
+export async function dummyConfirm(orderId) {
+  const { data } = await http.post(`/payments/${orderId}/dummy-confirm`);
+  return data;
+}
