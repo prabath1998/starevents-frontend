@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
-import { myTickets, myTicketQrUrl } from '../api/tickets';
+import { myTickets } from '../api/tickets';
+import http from '../api/http';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import Empty from '../components/Empty';
 import toast from 'react-hot-toast';
+import QRImage from '../components/QRImage';
 
 export default function MyTickets() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
-
     (async () => {
       try {
         const res = await myTickets();
@@ -19,17 +20,27 @@ export default function MyTickets() {
         if (!cancelled) toast.error('Failed to load tickets');
       }
     })();
-
     return () => { cancelled = true; };
   }, []);
 
+  const downloadQr = async (ticketId, fileName) => {
+    try {
+      const res = await http.get(`/me/tickets/${ticketId}/qr`, { responseType: 'blob' });
+      const url = URL.createObjectURL(res.data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${fileName}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error('Download failed');
+    }
+  };
+
   if (!items.length) {
-    return (
-      <Empty
-        title="No tickets yet"
-        subtitle="Purchase tickets and they’ll appear here."
-      />
-    );
+    return <Empty title="No tickets yet" subtitle="Purchase tickets and they’ll appear here." />;
   }
 
   return (
@@ -43,37 +54,28 @@ export default function MyTickets() {
 
           <div>
             <div className="text-gray-100 font-medium">{t.eventTitle}</div>
-            <div className="text-xs text-gray-500">
-              Issued {new Date(t.issuedAt).toLocaleString()}
-            </div>
+            <div className="text-xs text-gray-500">Issued {new Date(t.issuedAt).toLocaleString()}</div>
             <div className="mt-1 text-xs">
               Status:{' '}
-              <span className="px-2 py-0.5 rounded border border-gray-700 bg-gray-800">
-                {t.status}
-              </span>
+              <span className="px-2 py-0.5 rounded border border-gray-700 bg-gray-800">{t.status}</span>
             </div>
           </div>
 
-          <img
-            className="w-full border border-gray-800 rounded-lg bg-white p-2"
-            src={myTicketQrUrl(t.id)}
-            alt="Ticket QR"
-          />
+          {/* Auth-aware image */}
+          <QRImage ticketId={t.id} className="w-full rounded-lg border border-gray-800 bg-white p-2" />
 
           <div className="flex gap-2 pt-1">
             <Button
               variant="secondary"
-              onClick={() => window.open(myTicketQrUrl(t.id), '_blank')}
+              onClick={() => window.open(`/me/tickets/${t.id}/qr`, '_blank')}
             >
               Open
             </Button>
-            <a
-              className="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium bg-gray-800 border border-gray-700 hover:bg-gray-700 transition"
-              href={myTicketQrUrl(t.id)}
-              download={`ticket-${t.ticketCode}.png`}
+            <Button
+              onClick={() => downloadQr(t.id, `ticket-${t.ticketCode}`)}
             >
               Download
-            </a>
+            </Button>
           </div>
         </Card>
       ))}
