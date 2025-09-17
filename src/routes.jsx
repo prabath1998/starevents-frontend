@@ -10,6 +10,7 @@ import OrganizerEvents from "./pages/OrganizerEvents.jsx";
 import OrganizerEventCreate from "./pages/OrganizerEventCreate.jsx";
 import OrganizerTicketTypes from "./pages/OrganizerTicketTypes.jsx";
 import PrivateRoute from "./auth/PrivateRoute.jsx";
+import AuthCheck from "./auth/AuthCheck.jsx";
 import OrganizerRoute from "./auth/OrganizerRoute.jsx";
 import AdminRoute from "./auth/AdminRoute.jsx";
 import AdminHome from "./pages/admin/AdminHome.jsx";
@@ -19,7 +20,7 @@ import AdminDiscounts from "./pages/admin/AdminDiscounts.jsx";
 import AdminAuditLogs from "./pages/admin/AdminAuditLogs.jsx";
 import OrganizerScan from "./pages/OrganizerScan.jsx";
 // import PrivateRoute from './auth/PrivateRoute.jsx';
-import MyTickets from './pages/MyTickets.jsx';
+import MyTickets from "./pages/MyTickets.jsx";
 
 export default function RoutesView() {
   return (
@@ -42,8 +43,10 @@ export default function RoutesView() {
         />
       </Route>
 
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route element={<AuthCheck />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
 
