@@ -27,7 +27,6 @@ http.interceptors.request.use(config => {
   return config
 })
 
-// auto-refresh on 401
 let refreshing = null
 http.interceptors.response.use(
   r => r,
