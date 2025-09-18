@@ -10,7 +10,7 @@ export async function listMyOrders(page = 1, pageSize = 20) {
 }
 export async function initiatePayment(orderId) {
   const { data } = await http.post(`/payments/${orderId}/initiate`);
-  return data;
+  return data; 
 }
 
 export async function dummyConfirm(orderId) {

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@stripe/stripe-js": "^7.9.0",
     "@tailwindcss/vite": "^4.1.13",
     "@zxing/browser": "^0.1.5",
     "axios": "^1.12.2",
