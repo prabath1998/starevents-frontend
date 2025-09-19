@@ -21,6 +21,7 @@ import AdminAuditLogs from "./pages/admin/AdminAuditLogs.jsx";
 import OrganizerScan from "./pages/OrganizerScan.jsx";
 // import PrivateRoute from './auth/PrivateRoute.jsx';
 import MyTickets from "./pages/MyTickets.jsx";
+import Reports from "./pages/Reports.jsx";
 
 export default function RoutesView() {
   return (
@@ -41,6 +42,7 @@ export default function RoutesView() {
           path="/organizer/:id/ticket-types"
           element={<OrganizerTicketTypes />}
         />
+        <Route path="/reports" element={<Reports />} />
       </Route>
 
       <Route element={<AuthCheck />}>
