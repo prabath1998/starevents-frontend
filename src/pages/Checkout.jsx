@@ -1,25 +1,29 @@
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { ShoppingBagIcon, TagIcon, CreditCardIcon } from '@heroicons/react/24/outline'; // Importing Heroicons
-import Card from '../components/Card';
-import Button from '../components/Button';
-import PromoCodeBox from '../components/PromoCodeBox';
-import { initiatePayment, getOrderSummary } from '../api/orders';
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import toast from "react-hot-toast";
+import {
+  ShoppingBagIcon,
+  TagIcon,
+  CreditCardIcon,
+} from "@heroicons/react/24/outline"; 
+import Card from "../components/Card";
+import Button from "../components/Button";
+import PromoCodeBox from "../components/PromoCodeBox";
+import { initiatePayment, getOrderSummary } from "../api/orders";
 
-const money = (cents, currency = 'LKR') =>
-  `${currency} ${(cents / 100).toFixed(2)}`;
+const money = (cents, currency = "LKR") =>
+  `${currency} ${(cents).toFixed(2)}`;
 
 export default function Checkout() {
   const [params] = useSearchParams();
-  const orderId = params.get('orderId');
+  const orderId = params.get("orderId");
 
   const [loading, setLoading] = useState(false);
   const [summary, setSummary] = useState({
     subtotalCents: 0,
     discountCents: 0,
     totalCents: 0,
-    currency: 'LKR',
+    currency: "LKR",
   });
 
   useEffect(() => {
@@ -28,16 +32,19 @@ export default function Checkout() {
       if (!orderId) return;
       try {
         const s = await getOrderSummary(orderId);
-        if (alive) setSummary(s);
-      } catch {
-        // Handle error, e.g., toast.error('Failed to load order summary');
-      }
+        if (alive) {
+          setSummary(s);          
+        }
+       
+      } catch {}
     })();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, [orderId]);
 
   const handlePriceChange = (res) => {
-    setSummary(s => ({
+    setSummary((s) => ({
       ...s,
       subtotalCents: res.subtotalCents,
       discountCents: res.discountCents,
@@ -46,7 +53,7 @@ export default function Checkout() {
   };
 
   const pay = async () => {
-    if (!orderId) return toast.error('Missing order id');
+    if (!orderId) return toast.error("Missing order id");
     setLoading(true);
     try {
       const res = await initiatePayment(orderId);
@@ -56,7 +63,7 @@ export default function Checkout() {
       }
     } catch (e) {
       console.error(e);
-      toast.error(e?.response?.data ?? 'Payment init failed');
+      toast.error(e?.response?.data ?? "Payment init failed");
     } finally {
       setLoading(false);
     }
@@ -71,25 +78,32 @@ export default function Checkout() {
         </div>
 
         <p className="text-gray-400 text-sm mb-6">
-          Order ID: <span className="font-mono text-neutral-300">{orderId ?? '—'}</span>
+          Order ID:{" "}
+          <span className="font-mono text-neutral-300">{orderId ?? "—"}</span>
         </p>
 
         <div className="space-y-4 text-sm font-medium">
           <div className="flex justify-between items-center">
             <span className="text-gray-400">Subtotal</span>
-            <span className="text-neutral-200">{money(summary.subtotalCents, summary.currency)}</span>
+            <span className="text-neutral-200">             
+              {money(summary.subtotalCents)}
+            </span>
           </div>
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-2 text-gray-400">
               <TagIcon className="w-4 h-4" />
               <span>Discount</span>
             </div>
-            <span className="text-green-400 font-semibold">-{money(summary.discountCents, summary.currency)}</span>
+            <span className="text-green-400 font-semibold">
+              -{money(summary.discountCents, summary.currency)}
+            </span>
           </div>
           <div className="border-t border-neutral-700 pt-4 mt-4" />
           <div className="flex justify-between items-center text-lg font-bold">
             <span className="text-neutral-100">Total</span>
-            <span className="text-indigo-300">{money(summary.totalCents, summary.currency)}</span>
+            <span className="text-indigo-300">
+              {money(summary.totalCents, summary.currency)}
+            </span>
           </div>
         </div>
 
@@ -97,16 +111,32 @@ export default function Checkout() {
           <PromoCodeBox orderId={orderId} onPriceChange={handlePriceChange} />
         </div>
 
-        <Button 
-          onClick={pay} 
-          disabled={loading} 
+        <Button
+          onClick={pay}
+          disabled={loading}
           className="mt-8 w-full py-3 bg-indigo-600 hover:bg-indigo-500 transition-colors duration-200 rounded-lg text-white font-semibold flex items-center justify-center space-x-2"
         >
           {loading ? (
             <>
-              <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               <span>Redirecting…</span>
             </>

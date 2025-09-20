@@ -23,6 +23,8 @@ import DiscountsPage from "./pages/organizer/Discounts";
 
 import MyTickets from "./pages/MyTickets.jsx";
 import Reports from "./pages/Reports.jsx";
+import CheckoutSuccess from "./pages/CheckoutSuccess.jsx";
+import CheckoutCancel from "./pages/CheckoutCancel.jsx";
 
 export default function RoutesView() {
   return (
@@ -60,19 +62,21 @@ export default function RoutesView() {
       </Route>
       <Route element={<PrivateRoute />}>
         <Route path="/me/tickets" element={<MyTickets />} />
-      </Route>
-      {/* <Route
-        path="/organizer/discounts"
-        element={
-         
-            <DiscountsPage />
-          
-        }
-      /> */}
+      </Route>     
      
       <Route
         path="/events/:eventId/discounts"
         element={<DiscountsPage />}
+      />
+
+       <Route
+        path="/payment/success"
+        element={<CheckoutSuccess />}
+      />
+
+       <Route
+        path="/payment/cancel"
+        element={<CheckoutCancel />}
       />
     </Routes>
   );
