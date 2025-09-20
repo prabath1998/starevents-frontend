@@ -22,6 +22,7 @@ import OrganizerScan from "./pages/OrganizerScan.jsx";
 import DiscountsPage from "./pages/organizer/Discounts";
 
 import MyTickets from "./pages/MyTickets.jsx";
+import Reports from "./pages/Reports.jsx";
 
 export default function RoutesView() {
   return (
@@ -40,6 +41,7 @@ export default function RoutesView() {
           path="/organizer/:id/ticket-types"
           element={<OrganizerTicketTypes />}
         />
+        <Route path="/reports" element={<Reports />} />
       </Route>
       <Route element={<AuthCheck />}>
         <Route path="/login" element={<Login />} />
