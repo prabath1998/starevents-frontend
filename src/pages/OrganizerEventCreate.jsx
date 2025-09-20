@@ -48,8 +48,8 @@ export default function OrganizerEventCreate() {
             <Input label="Address" {...register('locationAddress')} placeholder="e.g., 123 Main Street" />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input label="Start Time (UTC)"  step="0.001"  type="datetime-local" {...register('startTime', { required: true })} />
-            <Input label="End Time (UTC)" step="0.001"  type="datetime-local" {...register('endTime', { required: true })} />
+            <Input label="Start Time (UTC)"   type="datetime-local" {...register('startTime', { required: true })} />
+            <Input label="End Time (UTC)"  type="datetime-local" {...register('endTime', { required: true })} />
           </div>
           <Input label="Category IDs (comma-separated)" {...register('categoryIds')} placeholder="e.g., 1, 5, 12" />
           <Textarea label="Description" rows={6} {...register('description')} placeholder="Provide a detailed description of your event..." />
