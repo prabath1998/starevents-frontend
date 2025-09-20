@@ -5,14 +5,14 @@ import {
   ShoppingBagIcon,
   TagIcon,
   CreditCardIcon,
-} from "@heroicons/react/24/outline"; 
+} from "@heroicons/react/24/outline";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import PromoCodeBox from "../components/PromoCodeBox";
 import { initiatePayment, getOrderSummary } from "../api/orders";
 
 const money = (cents, currency = "LKR") =>
-  `${currency} ${(cents).toFixed(2)}`;
+  `${currency} ${(Number(cents) || 0).toFixed(2)}`;
 
 export default function Checkout() {
   const [params] = useSearchParams();
@@ -31,12 +31,20 @@ export default function Checkout() {
     (async () => {
       if (!orderId) return;
       try {
-        const s = await getOrderSummary(orderId);
-        if (alive) {
-          setSummary(s);          
-        }
-       
-      } catch {}
+        const res = await getOrderSummary(orderId);
+
+        const s = res?.data ?? res ?? {};
+        const normalized = {
+          subtotalCents: Number(s.subtotalCents ?? 0),
+          discountCents: Number(s.discountCents ?? 0),
+          totalCents: Number(s.totalCents ?? 0),
+          currency: s.currency ?? "LKR",
+        };
+        if (alive) setSummary(normalized);
+      } catch (e) {
+        console.error("getOrderSummary failed", e);
+        toast.error("Couldn’t load order summary");
+      }
     })();
     return () => {
       alive = false;
@@ -46,9 +54,9 @@ export default function Checkout() {
   const handlePriceChange = (res) => {
     setSummary((s) => ({
       ...s,
-      subtotalCents: res.subtotalCents,
-      discountCents: res.discountCents,
-      totalCents: res.totalCents,
+      subtotalCents: Number(res.subtotalCents ?? s.subtotalCents),
+      discountCents: Number(res.discountCents ?? s.discountCents),
+      totalCents: Number(res.totalCents ?? s.totalCents),
     }));
   };
 
@@ -85,7 +93,7 @@ export default function Checkout() {
         <div className="space-y-4 text-sm font-medium">
           <div className="flex justify-between items-center">
             <span className="text-gray-400">Subtotal</span>
-            <span className="text-neutral-200">             
+            <span className="text-neutral-200">              
               {money(summary.subtotalCents)}
             </span>
           </div>

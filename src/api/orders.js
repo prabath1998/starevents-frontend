@@ -30,5 +30,5 @@ export async function removeDiscount(orderId) {
 }
 
 export const getOrderSummary = (orderId) =>
-  api.get(`/orders/${orderId}/summary`).then(r => r.data);
+  http.get(`/orders/${orderId}/summary`).then(r => r.data);
 

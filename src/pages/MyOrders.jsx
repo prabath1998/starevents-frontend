@@ -25,19 +25,31 @@ export default function MyOrders() {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen text-gray-400">
-        Loading orders...
+        <svg className="animate-spin h-8 w-8 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span className="ml-3 text-lg font-medium">Loading orders...</span>
       </div>
     );
   }
 
-  // if (!data.items.length) {
-  //   return (
-  //     <Empty
-  //       title="No orders yet"
-  //       subtitle="Your purchases will appear here."
-  //     />
-  //   );
-  // }
+  if (!data.items.length) {
+    return <Empty title="No orders found" subtitle="You haven't placed any orders yet." />;
+  }
+
+  const getStatusClasses = (status) => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return 'text-green-400';
+      case 'processing':
+        return 'text-yellow-400';
+      case 'cancelled':
+        return 'text-red-400';
+      default:
+        return 'text-gray-400';
+    }
+  };
 
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
@@ -45,39 +57,36 @@ export default function MyOrders() {
         <h1 className="text-3xl font-extrabold text-white">My Orders</h1>
         <button
           onClick={() => navigate('/reports')}
-          className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors"
+          className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors p-2 rounded-md"
         >
-          <FileTextIcon size={16} />
-          Reports
+          <FileTextIcon size={20} />
+          <span className="hidden sm:inline">Reports</span>
         </button>
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {data.items.map(o => (
           <Card
             key={o.id}
-            className="bg-gray-800 rounded-xl shadow-lg border border-gray-700 hover:border-indigo-500 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+            className="p-5 rounded-xl shadow-lg border border-gray-800 bg-gray-900 transition-all duration-300 hover:bg-gray-800"
           >
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-full bg-indigo-500/10 text-indigo-400">
-                  <PackageIcon size={20} />
-                </div>
-                <div>
-                  <div className="text-lg font-semibold text-white">Order #{o.orderNumber}</div>
-                  <div className="text-xs text-gray-500 mt-0.5">
-                    {format(new Date(o.createdAt), 'MMMM d, yyyy')}
-                  </div>
-                </div>
-              </div>
-              <span className="text-xs font-medium rounded-full px-3 py-1 mt-1 border border-gray-600 text-gray-400 bg-gray-700">
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-lg font-semibold text-white">Order #{o.orderNumber}</div>
+              <div className={`text-sm font-medium ${getStatusClasses(o.status)}`}>
                 {o.status}
-              </span>
+              </div>
             </div>
 
-            <div className="mt-4 pt-4 border-t border-gray-700">
+            <div className="flex items-center justify-between mt-4 border-t border-gray-700 pt-3">
+              <div className="flex items-center gap-2 text-gray-400">
+                <PackageIcon size={16} />
+                <span className="text-sm">
+                  {format(new Date(o.createdAt), 'MMM d, yyyy')}
+                </span>
+              </div>
               <div className="text-xl font-bold text-indigo-400">
                 ${(o.totalCents / 100).toFixed(2)}
-                <span className="text-base font-normal text-gray-500 ml-1">{o.currency}</span>
+                <span className="text-sm font-normal text-gray-500 ml-1">{o.currency}</span>
               </div>
             </div>
           </Card>

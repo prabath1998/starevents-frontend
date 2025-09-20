@@ -25,7 +25,9 @@ export default function Navbar() {
         onClick={toggleMenu}
         className={({ isActive }) =>
           `py-2 transition-colors ${
-            isActive ? "text-indigo-400 font-semibold" : "text-gray-300 hover:text-white"
+            isActive
+              ? "text-indigo-400 font-semibold"
+              : "text-gray-300 hover:text-white"
           }`
         }
       >
@@ -36,21 +38,39 @@ export default function Navbar() {
           <NavLink
             to="/orders"
             onClick={toggleMenu}
-            className="py-2 transition-colors text-gray-300 hover:text-white"
+            className={({ isActive }) =>
+              `py-2 transition-colors ${
+                isActive
+                  ? "text-indigo-400 font-semibold"
+                  : "text-gray-300 hover:text-white"
+              }`
+            }
           >
             My Orders
           </NavLink>
           <NavLink
             to="/organizer"
             onClick={toggleMenu}
-            className="py-2 transition-colors text-gray-300 hover:text-white"
+            className={({ isActive }) =>
+              `py-2 transition-colors ${
+                isActive
+                  ? "text-indigo-400 font-semibold"
+                  : "text-gray-300 hover:text-white"
+              }`
+            }
           >
             Manage Events
           </NavLink>
           <NavLink
             to="/me/tickets"
             onClick={toggleMenu}
-            className="py-2 transition-colors text-gray-300 hover:text-white"
+            className={({ isActive }) =>
+              `py-2 transition-colors ${
+                isActive
+                  ? "text-indigo-400 font-semibold"
+                  : "text-gray-300 hover:text-white"
+              }`
+            }
           >
             My Tickets
           </NavLink>
@@ -58,7 +78,13 @@ export default function Navbar() {
             <NavLink
               to="/admin"
               onClick={toggleMenu}
-              className="py-2 transition-colors text-gray-300 hover:text-white"
+              className={({ isActive }) =>
+                `py-2 transition-colors ${
+                  isActive
+                    ? "text-indigo-400 font-semibold"
+                    : "text-gray-300 hover:text-white"
+                }`
+              }
             >
               Admin Dashboard
             </NavLink>
@@ -71,21 +97,23 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 backdrop-blur-sm bg-gray-950/70 border-b border-gray-800">
       <nav className="container mx-auto px-4 py-3 flex items-center justify-between">
-        {/* Logo and brand name */}
-        <Link to="/" className="flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors">
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-indigo-400 hover:text-indigo-300 transition-colors"
+        >
           <MusicalNoteIcon className="h-7 w-7" />
           <span className="font-bold text-xl">Star Events</span>
         </Link>
 
-        {/* Desktop Navigation */}
         <div className="hidden md:flex flex-1 items-center justify-between ml-8">
-          <div className="flex items-center gap-6">
-            {navLinks}
-          </div>
+          <div className="flex items-center gap-6">{navLinks}</div>
           <div className="flex items-center gap-2">
             {!user ? (
               <>
-                <NavLink to="/login" className="text-gray-300 hover:text-white transition-colors font-medium">
+                <NavLink
+                  to="/login"
+                  className="text-gray-300 hover:text-white transition-colors font-medium"
+                >
                   Login
                 </NavLink>
                 <NavLink to="/register">
@@ -106,10 +134,12 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile menu button */}
         <div className="md:hidden flex items-center gap-2">
           {!user ? (
-            <NavLink to="/login" className="text-gray-300 hover:text-white transition-colors font-medium">
+            <NavLink
+              to="/login"
+              className="text-gray-300 hover:text-white transition-colors font-medium"
+            >
               Login
             </NavLink>
           ) : (
@@ -117,12 +147,15 @@ export default function Navbar() {
           )}
           <Button variant="secondary" onClick={toggleMenu} className="p-2">
             <span className="sr-only">Open menu</span>
-            {isOpen ? <XMarkIcon className="h-6 w-6" /> : <Bars3Icon className="h-6 w-6" />}
+            {isOpen ? (
+              <XMarkIcon className="h-6 w-6" />
+            ) : (
+              <Bars3Icon className="h-6 w-6" />
+            )}
           </Button>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
       <div
         className={`md:hidden absolute top-full left-0 w-full bg-gray-950/90 transition-all duration-300 ease-in-out ${
           isOpen ? "max-h-96 opacity-100 py-4" : "max-h-0 opacity-0 py-0"
@@ -131,7 +164,11 @@ export default function Navbar() {
         <div className="flex flex-col gap-3 px-4">
           {navLinks}
           {user && (
-            <Button variant="secondary" onClick={logout} className="mt-2 w-full justify-center">
+            <Button
+              variant="secondary"
+              onClick={logout}
+              className="mt-2 w-full justify-center"
+            >
               <ArrowRightOnRectangleIcon className="h-5 w-5" /> Logout
             </Button>
           )}
