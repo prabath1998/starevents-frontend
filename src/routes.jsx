@@ -19,7 +19,8 @@ import AdminEvents from "./pages/admin/AdminEvents.jsx";
 import AdminDiscounts from "./pages/admin/AdminDiscounts.jsx";
 import AdminAuditLogs from "./pages/admin/AdminAuditLogs.jsx";
 import OrganizerScan from "./pages/OrganizerScan.jsx";
-// import PrivateRoute from './auth/PrivateRoute.jsx';
+import DiscountsPage from "./pages/organizer/Discounts";
+
 import MyTickets from "./pages/MyTickets.jsx";
 
 export default function RoutesView() {
@@ -28,12 +29,10 @@ export default function RoutesView() {
       <Route path="/" element={<Home />} />
       <Route path="/events" element={<EventsList />} />
       <Route path="/events/:id" element={<EventDetail />} />
-
       <Route element={<PrivateRoute />}>
         <Route path="/orders" element={<MyOrders />} />
         <Route path="/checkout" element={<Checkout />} />
       </Route>
-
       <Route element={<OrganizerRoute />}>
         <Route path="/organizer" element={<OrganizerEvents />} />
         <Route path="/organizer/create" element={<OrganizerEventCreate />} />
@@ -42,18 +41,14 @@ export default function RoutesView() {
           element={<OrganizerTicketTypes />}
         />
       </Route>
-
       <Route element={<AuthCheck />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Route>
-
       <Route path="*" element={<Navigate to="/" replace />} />
-
       <Route element={<OrganizerRoute />}>
         <Route path="/organizer/scan" element={<OrganizerScan />} />
       </Route>
-
       <Route element={<AdminRoute />}>
         <Route path="/admin" element={<AdminHome />} />
         <Route path="/admin/users" element={<AdminUsers />} />
@@ -61,10 +56,22 @@ export default function RoutesView() {
         <Route path="/admin/discounts" element={<AdminDiscounts />} />
         <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
       </Route>
-
       <Route element={<PrivateRoute />}>
         <Route path="/me/tickets" element={<MyTickets />} />
       </Route>
+      {/* <Route
+        path="/organizer/discounts"
+        element={
+         
+            <DiscountsPage />
+          
+        }
+      /> */}
+     
+      <Route
+        path="/events/:eventId/discounts"
+        element={<DiscountsPage />}
+      />
     </Routes>
   );
 }

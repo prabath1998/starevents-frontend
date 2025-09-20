@@ -28,3 +28,7 @@ export async function removeDiscount(orderId) {
   const { data } = await http.delete(`/orders/${orderId}/discount`);
   return data; 
 }
+
+export const getOrderSummary = (orderId) =>
+  api.get(`/orders/${orderId}/summary`).then(r => r.data);
+

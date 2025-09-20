@@ -1,91 +1,121 @@
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import { initiatePayment } from '../api/orders';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { ShoppingBagIcon, TagIcon, CreditCardIcon } from '@heroicons/react/24/outline'; // Importing Heroicons
 import Card from '../components/Card';
 import Button from '../components/Button';
-import toast from 'react-hot-toast';
-import { useState } from 'react';
-import {
-  CreditCardIcon,
-  CheckCircleIcon,
-  ShoppingBagIcon,
-} from '@heroicons/react/24/solid';
+import PromoCodeBox from '../components/PromoCodeBox';
+import { initiatePayment, getOrderSummary } from '../api/orders';
+
+const money = (cents, currency = 'LKR') =>
+  `${currency} ${(cents / 100).toFixed(2)}`;
 
 export default function Checkout() {
   const [params] = useSearchParams();
-  const navigate = useNavigate();
   const orderId = params.get('orderId');
+
   const [loading, setLoading] = useState(false);
+  const [summary, setSummary] = useState({
+    subtotalCents: 0,
+    discountCents: 0,
+    totalCents: 0,
+    currency: 'LKR',
+  });
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      if (!orderId) return;
+      try {
+        const s = await getOrderSummary(orderId);
+        if (alive) setSummary(s);
+      } catch {
+        // Handle error, e.g., toast.error('Failed to load order summary');
+      }
+    })();
+    return () => { alive = false; };
+  }, [orderId]);
+
+  const handlePriceChange = (res) => {
+    setSummary(s => ({
+      ...s,
+      subtotalCents: res.subtotalCents,
+      discountCents: res.discountCents,
+      totalCents: res.totalCents,
+    }));
+  };
 
   const pay = async () => {
     if (!orderId) return toast.error('Missing order id');
     setLoading(true);
     try {
       const res = await initiatePayment(orderId);
-
-      if (res.provider !== 'Stripe') {
-        toast.error('Unexpected provider');
-        return;
-      }
-
-      if (res.requiresRedirect && res.redirectUrl) {
+      if (res.redirectUrl) {
         window.location.href = res.redirectUrl;
         return;
       }
-
-      if (res.sessionId) {
-        toast.error('Stripe session created but no redirect URL returned.');
-      } else {
-        toast.error('Payment init failed: missing session info.');
-      }
     } catch (e) {
       console.error(e);
-      toast.error('Payment init failed');
+      toast.error(e?.response?.data ?? 'Payment init failed');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-950 px-4">
-      <Card className="max-w-md w-full rounded-2xl shadow-2xl bg-gray-900 p-8">
-        <div className="flex flex-col items-center">
-          <div className="bg-indigo-500 rounded-full p-4 mb-4">
-            <ShoppingBagIcon className="h-8 w-8 text-white" />
-          </div>
-          <h2 className="text-3xl font-bold text-white mb-2">Order Summary</h2>
-          <p className="text-gray-400 mb-6 text-center">
-            Review your order details and proceed to payment.
-          </p>
+    <div className="max-w-xl mx-auto p-4 sm:p-6 lg:p-8">
+      <Card className="bg-neutral-800 rounded-2xl shadow-2xl p-6 sm:p-8">
+        <div className="flex items-center space-x-3 mb-6 border-b border-neutral-700 pb-4">
+          <ShoppingBagIcon className="w-8 h-8 text-indigo-400" />
+          <h2 className="text-2xl font-bold text-indigo-300">Checkout</h2>
         </div>
-        <div className="bg-gray-800 p-6 rounded-xl mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-300 font-medium">Order ID:</span>
-            <span className="text-indigo-400 font-mono text-sm">
-              #{orderId ?? '—'}
-            </span>
+
+        <p className="text-gray-400 text-sm mb-6">
+          Order ID: <span className="font-mono text-neutral-300">{orderId ?? '—'}</span>
+        </p>
+
+        <div className="space-y-4 text-sm font-medium">
+          <div className="flex justify-between items-center">
+            <span className="text-gray-400">Subtotal</span>
+            <span className="text-neutral-200">{money(summary.subtotalCents, summary.currency)}</span>
           </div>
-          <div className="flex items-center text-green-400">
-            <CheckCircleIcon className="h-5 w-5 mr-2" />
-            <span>Order confirmed and ready for payment.</span>
-          </div>
-        </div>
-        <div className="space-y-4">
-          <div className="flex items-center bg-gray-800 p-4 rounded-xl">
-            <CreditCardIcon className="h-6 w-6 text-indigo-400 mr-4" />
-            <div>
-              <p className="text-gray-200 font-semibold">Stripe Secure Payment</p>
-              <p className="text-gray-500 text-sm">
-                You will be redirected to Stripe to complete your purchase.
-              </p>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center space-x-2 text-gray-400">
+              <TagIcon className="w-4 h-4" />
+              <span>Discount</span>
             </div>
+            <span className="text-green-400 font-semibold">-{money(summary.discountCents, summary.currency)}</span>
+          </div>
+          <div className="border-t border-neutral-700 pt-4 mt-4" />
+          <div className="flex justify-between items-center text-lg font-bold">
+            <span className="text-neutral-100">Total</span>
+            <span className="text-indigo-300">{money(summary.totalCents, summary.currency)}</span>
           </div>
         </div>
-        <Button
-          onClick={pay}
-          disabled={loading}
-          className="w-full mt-8 py-3 text-lg font-bold rounded-lg transition-transform transform active:scale-95"
+
+        <div className="mt-6">
+          <PromoCodeBox orderId={orderId} onPriceChange={handlePriceChange} />
+        </div>
+
+        <Button 
+          onClick={pay} 
+          disabled={loading} 
+          className="mt-8 w-full py-3 bg-indigo-600 hover:bg-indigo-500 transition-colors duration-200 rounded-lg text-white font-semibold flex items-center justify-center space-x-2"
         >
-          {loading ? 'Redirecting…' : 'Pay with Stripe'}
+          {loading ? (
+            <>
+              <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span>Redirecting…</span>
+            </>
+          ) : (
+            <>
+              <CreditCardIcon className="w-5 h-5" />
+              <span>Pay with Stripe</span>
+            </>
+          )}
         </Button>
       </Card>
     </div>
