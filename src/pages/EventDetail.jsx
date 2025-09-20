@@ -13,7 +13,7 @@ import {
   PlusIcon,
 } from "@heroicons/react/24/outline";
 import { formatCurrency } from "../utils/helper";
-import { listPublicDiscounts } from '../api/discounts'
+import { listPublicDiscounts } from "../api/discounts";
 
 const DEFAULT_EVENT_IMAGE =
   "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=2940&auto=format&fit=crop";
@@ -38,7 +38,7 @@ export default function EventDetail() {
         setEvent(eventData);
         setTypes(ticketData);
         const promos = await listPublicDiscounts(id);
-      setHasPromo(promos?.length > 0);
+        setHasPromo(promos?.length > 0);
       } catch (error) {
         console.error("Failed to load event or tickets:", error);
         toast.error("Event not found or failed to load tickets");
@@ -96,7 +96,7 @@ export default function EventDetail() {
   return (
     <div className="min-h-screen pb-24">
       {hasPromo && <PromoHint eventId={id} />}
-      
+
       <div className="relative w-full h-96 lg:h-[500px] overflow-hidden">
         <img
           src={event.imageUrl || DEFAULT_EVENT_IMAGE}

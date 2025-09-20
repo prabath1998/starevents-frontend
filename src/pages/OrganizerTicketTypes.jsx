@@ -7,7 +7,8 @@ import Card from "../components/Card";
 import { Input } from "../components/Input";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, TicketIcon, TagIcon } from '@heroicons/react/24/outline'; // Importing Heroicons
+
 
 export default function OrganizerTicketTypes() {
   const { id } = useParams();
@@ -46,24 +47,32 @@ export default function OrganizerTicketTypes() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 border-b border-neutral-700 pb-6">
+      <div className="flex items-center gap-4">
         <Link
           to="/organizer"
-          className="text-gray-400 hover:text-white transition-colors"
+          className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-neutral-700 transition-colors duration-200"
+          aria-label="Back to organizer dashboard"
         >
           <ArrowLeftIcon className="h-6 w-6" />
         </Link>
         <div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-1">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-1 flex items-center gap-2">
+            <TicketIcon className="h-8 w-8 text-indigo-400" />
             Create a New Ticket Type
           </h1>
-          <p className="text-gray-400 text-sm sm:text-base">For Event #{id}</p>
+          <p className="text-gray-400 text-sm sm:text-base">For Event #<span className="font-mono text-neutral-300">{id}</span></p>
         </div>
       </div>
-
-      <Link to={`/events/${id}/discounts`} className="btn">
-        Manage discounts
+      
+      <Link 
+        to={`/events/${id}/discounts`} 
+        className="inline-flex items-center justify-center px-6 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-neutral-900 focus:ring-indigo-500 transition-colors duration-200"
+      >
+        <TagIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+        Manage Discounts
       </Link>
+    </div>
 
       <Card className="bg-gray-800/60 backdrop-blur-sm border border-gray-700/50 shadow-2xl p-6 sm:p-8">
         <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
