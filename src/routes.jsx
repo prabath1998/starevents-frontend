@@ -25,6 +25,7 @@ import MyTickets from "./pages/MyTickets.jsx";
 import Reports from "./pages/Reports.jsx";
 import CheckoutSuccess from "./pages/CheckoutSuccess.jsx";
 import CheckoutCancel from "./pages/CheckoutCancel.jsx";
+import Profile from "./pages/Profile.jsx";
 
 export default function RoutesView() {
   return (
@@ -49,10 +50,13 @@ export default function RoutesView() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Route>
+
       <Route path="*" element={<Navigate to="/" replace />} />
+      
       <Route element={<OrganizerRoute />}>
         <Route path="/organizer/scan" element={<OrganizerScan />} />
       </Route>
+
       <Route element={<AdminRoute />}>
         <Route path="/admin" element={<AdminHome />} />
         <Route path="/admin/users" element={<AdminUsers />} />
@@ -60,24 +64,17 @@ export default function RoutesView() {
         <Route path="/admin/discounts" element={<AdminDiscounts />} />
         <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
       </Route>
+
       <Route element={<PrivateRoute />}>
         <Route path="/me/tickets" element={<MyTickets />} />
-      </Route>     
-     
-      <Route
-        path="/events/:eventId/discounts"
-        element={<DiscountsPage />}
-      />
+        <Route path="/profile" element={<Profile />} />
+      </Route>
 
-       <Route
-        path="/payment/success"
-        element={<CheckoutSuccess />}
-      />
+      <Route path="/events/:eventId/discounts" element={<DiscountsPage />} />
 
-       <Route
-        path="/payment/cancel"
-        element={<CheckoutCancel />}
-      />
+      <Route path="/payment/success" element={<CheckoutSuccess />} />
+
+      <Route path="/payment/cancel" element={<CheckoutCancel />} />
     </Routes>
   );
 }

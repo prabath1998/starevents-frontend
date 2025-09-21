@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import Button from "./Button";
 import {
@@ -13,6 +13,7 @@ import {
 export default function Navbar() {
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -46,21 +47,25 @@ export default function Navbar() {
               }`
             }
           >
-            My Orders
+            My Bookings
           </NavLink>
-          <NavLink
-            to="/organizer"
-            onClick={toggleMenu}
-            className={({ isActive }) =>
-              `py-2 transition-colors ${
-                isActive
-                  ? "text-indigo-400 font-semibold"
-                  : "text-gray-300 hover:text-white"
-              }`
-            }
-          >
-            Manage Events
-          </NavLink>
+
+          {user.roles?.includes("Organizer") && (
+            <NavLink
+              to="/organizer"
+              onClick={toggleMenu}
+              className={({ isActive }) =>
+                `py-2 transition-colors ${
+                  isActive
+                    ? "text-indigo-400 font-semibold"
+                    : "text-gray-300 hover:text-white"
+                }`
+              }
+            >
+              Manage Events
+            </NavLink>
+          )}
+
           <NavLink
             to="/me/tickets"
             onClick={toggleMenu}
@@ -86,7 +91,7 @@ export default function Navbar() {
                 }`
               }
             >
-              Admin Dashboard
+              Dashboard
             </NavLink>
           )}
         </>
@@ -122,7 +127,11 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <span className="flex items-center gap-2 text-gray-300 font-medium mr-2">
+                <span
+                  className="flex items-center gap-2 text-gray-300 font-medium mr-2 cursor-pointer hover:underline"
+                  onClick={() => navigate("/profile")}
+                  title="Profile"
+                >
                   <UserCircleIcon className="h-6 w-6" /> {user.email}
                 </span>
                 <Button variant="secondary" onClick={logout}>
@@ -143,7 +152,7 @@ export default function Navbar() {
               Login
             </NavLink>
           ) : (
-            <span className="text-gray-300 text-sm">{user.email}</span>
+            <span  onClick={() => navigate("/profile")} className="text-gray-300 text-sm">{user.email}</span>
           )}
           <Button variant="secondary" onClick={toggleMenu} className="p-2">
             <span className="sr-only">Open menu</span>

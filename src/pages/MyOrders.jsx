@@ -54,7 +54,7 @@ export default function MyOrders() {
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-extrabold text-white">My Orders</h1>
+        <h1 className="text-3xl font-extrabold text-white">My Bookings</h1>
         <button
           onClick={() => navigate('/reports')}
           className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors p-2 rounded-md"
