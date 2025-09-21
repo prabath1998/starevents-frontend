@@ -5,6 +5,7 @@ import {
   ShoppingBagIcon,
   TagIcon,
   CreditCardIcon,
+  ArrowRightIcon,
 } from "@heroicons/react/24/outline";
 import Card from "../components/Card";
 import Button from "../components/Button";
@@ -78,83 +79,90 @@ export default function Checkout() {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-4 sm:p-6 lg:p-8">
-      <Card className="bg-neutral-800 rounded-2xl shadow-2xl p-6 sm:p-8">
-        <div className="flex items-center space-x-3 mb-6 border-b border-neutral-700 pb-4">
-          <ShoppingBagIcon className="w-8 h-8 text-indigo-400" />
-          <h2 className="text-2xl font-bold text-indigo-300">Checkout</h2>
-        </div>
-
-        <p className="text-gray-400 text-sm mb-6">
-          Order ID:{" "}
-          <span className="font-mono text-neutral-300">{orderId ?? "—"}</span>
-        </p>
-
-        <div className="space-y-4 text-sm font-medium">
-          <div className="flex justify-between items-center">
-            <span className="text-gray-400">Subtotal</span>
-            <span className="text-neutral-200">              
-              {money(summary.subtotalCents)}
-            </span>
+    <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
+      <Card className="max-w-xl w-full bg-neutral-900 rounded-2xl shadow-2xl p-6 sm:p-8 border border-neutral-800">
+       
+        <div className="flex items-center space-x-4 mb-8">
+          <div className="p-3 bg-indigo-500 rounded-full">
+            <ShoppingBagIcon className="w-8 h-8 text-white" />
           </div>
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-2 text-gray-400">
-              <TagIcon className="w-4 h-4" />
-              <span>Discount</span>
+          <h2 className="text-3xl font-extrabold text-neutral-50 tracking-tight">Checkout</h2>
+        </div>
+       
+        <div className="space-y-6">
+          <div className="p-4 bg-neutral-800 rounded-xl">
+            <p className="text-gray-400 text-sm font-mono">
+              Order ID: <span className="text-neutral-300">{orderId ?? "—"}</span>
+            </p>
+          </div>
+
+          <div className="space-y-4 text-sm font-medium">
+            <div className="flex justify-between items-center">
+              <span className="text-neutral-400">Subtotal</span>
+              <span className="text-neutral-50 font-semibold">{money(summary.subtotalCents)}</span>
             </div>
-            <span className="text-green-400 font-semibold">
-              -{money(summary.discountCents, summary.currency)}
-            </span>
-          </div>
-          <div className="border-t border-neutral-700 pt-4 mt-4" />
-          <div className="flex justify-between items-center text-lg font-bold">
-            <span className="text-neutral-100">Total</span>
-            <span className="text-indigo-300">
-              {money(summary.totalCents, summary.currency)}
-            </span>
+            
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-2 text-neutral-400">
+                <TagIcon className="w-4 h-4" />
+                <span>Discount</span>
+              </div>
+              <span className="text-green-400 font-semibold">
+                -{money(summary.discountCents, summary.currency)}
+              </span>
+            </div>
+            
+            <div className="border-t border-neutral-700 pt-4 mt-4" />
+            
+            <div className="flex justify-between items-center text-xl font-bold">
+              <span className="text-neutral-100">Total</span>
+              <span className="text-indigo-400">
+                {money(summary.totalCents, summary.currency)}
+              </span>
+            </div>
           </div>
         </div>
-
-        <div className="mt-6">
+        
+        <div className="mt-8 space-y-4">
           <PromoCodeBox orderId={orderId} onPriceChange={handlePriceChange} />
+          
+          <Button
+            onClick={pay}
+            disabled={loading}
+            className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 transition-colors duration-200 rounded-lg text-white font-semibold flex items-center justify-center space-x-2 transform hover:scale-105"
+          >
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                <span>Redirecting…</span>
+              </>
+            ) : (
+              <>
+                <CreditCardIcon className="w-5 h-5" />
+                <span>Pay with Stripe</span>
+              </>
+            )}
+          </Button>
         </div>
-
-        <Button
-          onClick={pay}
-          disabled={loading}
-          className="mt-8 w-full py-3 bg-indigo-600 hover:bg-indigo-500 transition-colors duration-200 rounded-lg text-white font-semibold flex items-center justify-center space-x-2"
-        >
-          {loading ? (
-            <>
-              <svg
-                className="animate-spin h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-              <span>Redirecting…</span>
-            </>
-          ) : (
-            <>
-              <CreditCardIcon className="w-5 h-5" />
-              <span>Pay with Stripe</span>
-            </>
-          )}
-        </Button>
       </Card>
     </div>
   );
