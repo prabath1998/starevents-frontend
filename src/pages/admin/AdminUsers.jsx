@@ -15,15 +15,16 @@ export default function AdminUsers() {
   const [role, setRole] = useState("");
   const [active, setActive] = useState("");
   const [data, setData] = useState({ items: [] });
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
   const load = () =>
-    adminListUsers({
-      q,
-      role: role || undefined,
-      active: active === "" ? undefined : active === "true",
-    })
-      .then(setData)
-      .catch(() => toast.error("Load failed"));
+      adminListUsers({
+        q,
+        role: role || undefined,
+        active: active === "" ? undefined : active === "true",
+      })
+          .then(setData)
+          .catch(() => toast.error("Load failed"));
 
   useEffect(() => {
     let cancelled = false;
@@ -62,74 +63,131 @@ export default function AdminUsers() {
     load();
   };
 
-  return (
-    <div className="space-y-4">
-      <Card>
-        <div className="grid sm:grid-cols-3 gap-3">
-          <Input
-            placeholder="Search email/name"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
-          <Select value={role} onChange={(e) => setRole(e.target.value)}>
-            <option value="">Any role</option>
-            <option>Customer</option>
-            <option>Organizer</option>
-            <option>Admin</option>
-          </Select>
-          <Select value={active} onChange={(e) => setActive(e.target.value)}>
-            <option value="">Any status</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </Select>
-        </div>
-      </Card>
+  const generateReport = async () => {
+    setIsGeneratingReport(true);
+    try {
+      // Get all users without filters for the report
+      const reportData = await adminListUsers({
+        role: role || undefined,
+        active: active === "" ? undefined : active === "true",
+      });
 
-      <Table
-        columns={[
-          { key: "email", label: "Email" },
-          {
-            key: "name",
-            label: "Name",
-            render: (_, r) => `${r.firstName} ${r.lastName}`,
-          },
-          {
-            key: "roles",
-            label: "Roles",
-            render: (_, r) => r.roles.join(", "),
-          },
-          {
-            key: "isActive",
-            label: "Active",
-            render: (v) => (v ? "Yes" : "No"),
-          },
-          {
-            key: "actions",
-            label: "Actions",
-            render: (_, r) => (
-              <div className="flex gap-2">
-                <Button variant="secondary" onClick={() => toggleActive(r)}>
-                  {r.isActive ? "Deactivate" : "Activate"}
-                </Button>
-                {r.roles.includes("Organizer") ? (
-                  <Button
-                    variant="secondary"
-                    onClick={() => revokeOrganizer(r)}
-                  >
-                    Revoke Organizer
-                  </Button>
-                ) : (
-                  <Button onClick={() => grantOrganizer(r)}>
-                    Grant Organizer
-                  </Button>
-                )}
-              </div>
-            ),
-          },
-        ]}
-        rows={data.items}
-        keyField="id"
-      />
-    </div>
+      // Convert data to CSV format
+      const csvHeaders = ["Email", "First Name", "Last Name", "Roles", "Active", "User ID"];
+      const csvRows = reportData.items.map(user => [
+        user.email,
+        user.firstName,
+        user.lastName,
+        user.roles.join(", "),
+        user.isActive ? "Yes" : "No",
+        user.id
+      ]);
+
+      // Create CSV content
+      const csvContent = [
+        csvHeaders.join(","),
+        ...csvRows.map(row => row.map(field => `"${field}"`).join(","))
+      ].join("\n");
+
+      // Create and download file
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `users-report-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      toast.success("Report downloaded successfully");
+    } catch (error) {
+      console.error("Error generating report:", error);
+      toast.error("Failed to generate report");
+    } finally {
+      setIsGeneratingReport(false);
+    }
+  };
+
+  return (
+      <div className="space-y-4">
+        <Card>
+          <div className="grid sm:grid-cols-3 gap-3">
+            <Input
+                placeholder="Search email/name"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+            />
+            <Select value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="">Any role</option>
+              <option>Customer</option>
+              <option>Organizer</option>
+              <option>Admin</option>
+            </Select>
+            <Select value={active} onChange={(e) => setActive(e.target.value)}>
+              <option value="">Any status</option>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </Select>
+          </div>
+
+          {/* Report Button */}
+          <div className="mt-4 flex justify-end">
+            <Button
+                onClick={generateReport}
+                disabled={isGeneratingReport}
+                variant="secondary"
+            >
+              {isGeneratingReport ? "Generating Report..." : "Download User Report"}
+            </Button>
+          </div>
+        </Card>
+
+        <Table
+            columns={[
+              { key: "email", label: "Email" },
+              {
+                key: "name",
+                label: "Name",
+                render: (_, r) => `${r.firstName} ${r.lastName}`,
+              },
+              {
+                key: "roles",
+                label: "Roles",
+                render: (_, r) => r.roles.join(", "),
+              },
+              {
+                key: "isActive",
+                label: "Active",
+                render: (v) => (v ? "Yes" : "No"),
+              },
+              {
+                key: "actions",
+                label: "Actions",
+                render: (_, r) => (
+                    <div className="flex gap-2">
+                      <Button variant="secondary" onClick={() => toggleActive(r)}>
+                        {r.isActive ? "Deactivate" : "Activate"}
+                      </Button>
+                      {r.roles.includes("Organizer") ? (
+                          <Button
+                              variant="secondary"
+                              onClick={() => revokeOrganizer(r)}
+                          >
+                            Revoke Organizer
+                          </Button>
+                      ) : (
+                          <Button onClick={() => grantOrganizer(r)}>
+                            Grant Organizer
+                          </Button>
+                      )}
+                    </div>
+                ),
+              },
+            ]}
+            rows={data.items}
+            keyField="id"
+        />
+      </div>
   );
 }
