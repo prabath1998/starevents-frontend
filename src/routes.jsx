@@ -26,6 +26,8 @@ import Reports from "./pages/Reports.jsx";
 import CheckoutSuccess from "./pages/CheckoutSuccess.jsx";
 import CheckoutCancel from "./pages/CheckoutCancel.jsx";
 import Profile from "./pages/Profile.jsx";
+import OrganizerCheckIn from './pages/OrganizerCheckIn';
+
 
 export default function RoutesView() {
   return (
@@ -53,8 +55,8 @@ export default function RoutesView() {
 
       <Route path="*" element={<Navigate to="/" replace />} />
       
-      <Route element={<OrganizerRoute />}>
         <Route path="/organizer/scan" element={<OrganizerScan />} />
+      <Route element={<OrganizerRoute />}>
       </Route>
 
       <Route element={<AdminRoute />}>
@@ -75,6 +77,10 @@ export default function RoutesView() {
       <Route path="/payment/success" element={<CheckoutSuccess />} />
 
       <Route path="/payment/cancel" element={<CheckoutCancel />} />
+      <Route path="/payment/cancel" element={<CheckoutCancel />} />
+
+      <Route path="/organizer/check-in" element={<OrganizerCheckIn />} />
+
     </Routes>
   );
 }

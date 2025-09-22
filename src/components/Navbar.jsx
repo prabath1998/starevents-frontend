@@ -66,6 +66,22 @@ export default function Navbar() {
             </NavLink>
           )}
 
+          {user.roles?.includes("Organizer") && (
+            <NavLink
+              to="/organizer/check-in"
+              onClick={toggleMenu}
+              className={({ isActive }) =>
+                `py-2 transition-colors ${
+                  isActive
+                    ? "text-indigo-400 font-semibold"
+                    : "text-gray-300 hover:text-white"
+                }`
+              }
+            >
+              Check-In
+            </NavLink>
+          )}
+
           <NavLink
             to="/me/tickets"
             onClick={toggleMenu}
@@ -152,7 +168,12 @@ export default function Navbar() {
               Login
             </NavLink>
           ) : (
-            <span  onClick={() => navigate("/profile")} className="text-gray-300 text-sm">{user.email}</span>
+            <span
+              onClick={() => navigate("/profile")}
+              className="text-gray-300 text-sm"
+            >
+              {user.email}
+            </span>
           )}
           <Button variant="secondary" onClick={toggleMenu} className="p-2">
             <span className="sr-only">Open menu</span>
