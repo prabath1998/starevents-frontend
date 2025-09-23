@@ -26,8 +26,9 @@ import Reports from "./pages/Reports.jsx";
 import CheckoutSuccess from "./pages/CheckoutSuccess.jsx";
 import CheckoutCancel from "./pages/CheckoutCancel.jsx";
 import Profile from "./pages/Profile.jsx";
-import OrganizerCheckIn from './pages/OrganizerCheckIn';
-
+import OrganizerCheckIn from "./pages/OrganizerCheckIn";
+import OrganizerReports from "./pages/organizer/Reports.jsx";
+import AdminReports from "./pages/admin/Reports.jsx";
 
 export default function RoutesView() {
   return (
@@ -39,6 +40,7 @@ export default function RoutesView() {
         <Route path="/orders" element={<MyOrders />} />
         <Route path="/checkout" element={<Checkout />} />
       </Route>
+      <Route path="/organizer/reports" element={<OrganizerReports />} />
       <Route element={<OrganizerRoute />}>
         <Route path="/organizer" element={<OrganizerEvents />} />
         <Route path="/organizer/create" element={<OrganizerEventCreate />} />
@@ -54,10 +56,9 @@ export default function RoutesView() {
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
-      
-        <Route path="/organizer/scan" element={<OrganizerScan />} />
-      <Route element={<OrganizerRoute />}>
-      </Route>
+
+      <Route path="/organizer/scan" element={<OrganizerScan />} />
+      <Route element={<OrganizerRoute />}></Route>
 
       <Route element={<AdminRoute />}>
         <Route path="/admin" element={<AdminHome />} />
@@ -66,6 +67,7 @@ export default function RoutesView() {
         <Route path="/admin/discounts" element={<AdminDiscounts />} />
         <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
       </Route>
+      <Route path="/admin/reports" element={<AdminReports />} />
 
       <Route element={<PrivateRoute />}>
         <Route path="/me/tickets" element={<MyTickets />} />
@@ -80,7 +82,6 @@ export default function RoutesView() {
       <Route path="/payment/cancel" element={<CheckoutCancel />} />
 
       <Route path="/organizer/check-in" element={<OrganizerCheckIn />} />
-
     </Routes>
   );
 }

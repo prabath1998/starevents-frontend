@@ -82,6 +82,22 @@ export default function Navbar() {
             </NavLink>
           )}
 
+          {user.roles?.includes("Organizer") && (
+            <NavLink
+              to="/organizer/reports"
+              onClick={toggleMenu}
+              className={({ isActive }) =>
+                `py-2 transition-colors ${
+                  isActive
+                    ? "text-indigo-400 font-semibold"
+                    : "text-gray-300 hover:text-white"
+                }`
+              }
+            >
+              Reports
+            </NavLink>
+          )}
+
           <NavLink
             to="/me/tickets"
             onClick={toggleMenu}
